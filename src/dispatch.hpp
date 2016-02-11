@@ -10,20 +10,6 @@
 template <typename T, T t> struct dispatch_helper;
 
 /***
- * Free function with auto-parsed arguments
- */
-
-template <typename ... Args>
-using free_callback_t = int (*)(mock_lua_State *, Args...);
-
-template <typename ... Args, free_callback_t<Args...> target_func>
-struct dispatch_helper<free_callback_t<Args...>, target_func> {
-  static int dispatch(mock_lua_State *) {
-    return 0;
-  }
-};
-
-/***
  * Member callback with arguments
  *
  * (reduces to free function case, using "get_extraspace" and forwarding the arguments)
@@ -33,8 +19,6 @@ using member_callback_t = int (T::*)(mock_lua_State *, Args...);
 
 template <typename T, typename ... Args, member_callback_t<T, Args...> target_func>
 struct dispatch_helper<member_callback_t<T, Args...>, target_func> {
-
-public:
   static int dispatch(mock_lua_State * L) {
     return 0;
   }
