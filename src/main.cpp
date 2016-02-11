@@ -1,27 +1,15 @@
-struct mock_lua_State {
-  void * extraspace;
-};
-
-typedef int (*mock_lua_CFunction)(mock_lua_State *);
-
-/***
- * Push c function
- */
-
-inline void mock_lua_pushcfunction(mock_lua_State *, mock_lua_CFunction) {}
-
 // dispatch
 
 template <typename T, T t> struct dispatch_helper;
 
 template <typename T, typename... Args>
-using member_callback_t = int (T::*)(mock_lua_State *, Args...);
+using member_callback_t = int (T::*)(void *, Args...);
 
 //
 
 template <typename T, typename ... Args, member_callback_t<T, Args...> target_func>
 struct dispatch_helper<member_callback_t<T, Args...>, target_func> {
-  static int dispatch(mock_lua_State * L) {
+  static int dispatch(void * L) {
     return 0;
   }
 };
@@ -31,13 +19,13 @@ struct dispatch_helper<member_callback_t<T, Args...>, target_func> {
 //
 
 struct test {
-  int callback_one(mock_lua_State *, const char *) {
+  int callback_one(void *, int) {
     return 0;
   }
 };
 
-int main() {
-  mock_lua_State * L = 0;
+typedef int (*desired_sig_t)(void *);
 
-  mock_lua_pushcfunction(L, DISPATCH(&test::callback_one));
+int main() {
+  desired_sig_t ptr{DISPATCH(&test::callback_one)};
 }
