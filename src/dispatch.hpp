@@ -10,6 +10,14 @@
 #include <utility>
 
 /***
+ * Utility to cast extraspace pointer to owner type
+ */
+template <typename T>
+T*& extra_space_ptr_ref(mock_lua_State * L) {
+  return *static_cast<T**>(mock_lua_getextraspace(L));
+}
+
+/***
  * Helper template which allows to shoe-horn various C++ functions into the required 
  * int (mock_lua_State *) signature so that they can be registered
  */
