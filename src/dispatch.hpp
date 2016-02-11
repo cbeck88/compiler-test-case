@@ -2,7 +2,6 @@
 
 #include "count.hpp"
 #include "mock_lua.hpp"
-#include "read.hpp"
 
 #include <cstddef>
 #include <tuple>
@@ -16,6 +15,38 @@ template <typename T>
 T*& extra_space_ptr_ref(mock_lua_State * L) {
   return *static_cast<T**>(mock_lua_getextraspace(L));
 }
+
+/***
+ * Traits to read an argument type
+ */
+
+namespace traits {
+
+template <typename T> struct read;
+
+template <>
+struct read<const char *> {
+  static bool check_read(mock_lua_State * L, int index) {
+    return true;
+  }
+
+  static const char * do_read(mock_lua_State * L, int index) {
+    return "asdf";
+  }
+};
+
+template <>
+struct read<int> {
+  static bool check_read(mock_lua_State * L, int index) {
+    return true;
+  }
+
+  static int do_read(mock_lua_State * L, int index) {
+    return 42;
+  }
+};
+
+} // end namespace traits
 
 /***
  * Helper template which allows to shoe-horn various C++ functions into the required 

@@ -2,7 +2,7 @@
 #include "dispatch.hpp"
 
 struct test {
-  int callback_one(mock_lua_State *, std::string) {
+  int callback_one(mock_lua_State *, const char *) {
     return 0;
   }
 };
