@@ -18,7 +18,6 @@ using free_callback_t = int (*)(mock_lua_State *, Args...);
 
 template <typename ... Args, free_callback_t<Args...> target_func>
 struct dispatch_helper<free_callback_t<Args...>, target_func> {
-
   static int dispatch(mock_lua_State *) {
     return 0;
   }
@@ -34,15 +33,10 @@ using member_callback_t = int (T::*)(mock_lua_State *, Args...);
 
 template <typename T, typename ... Args, member_callback_t<T, Args...> target_func>
 struct dispatch_helper<member_callback_t<T, Args...>, target_func> {
-private:
-  static int dispatch_from_extraspace(mock_lua_State * L, Args... args) {
-    return 0;
-  }
 
 public:
   static int dispatch(mock_lua_State * L) {
-    typedef dispatch_helper<free_callback_t<Args...>, dispatch_from_extraspace> helper_t;
-    return helper_t::dispatch(L);
+    return 0;
   }
 };
 
