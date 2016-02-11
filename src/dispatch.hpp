@@ -53,38 +53,6 @@ T*& extra_space_ptr_ref(mock_lua_State * L) {
 }
 
 /***
- * Traits to read an argument type
- */
-
-namespace traits {
-
-template <typename T> struct read;
-
-template <>
-struct read<const char *> {
-  static bool check_read(mock_lua_State *, int) {
-    return true;
-  }
-
-  static const char * do_read(mock_lua_State *, int) {
-    return "asdf";
-  }
-};
-
-template <>
-struct read<int> {
-  static bool check_read(mock_lua_State *, int) {
-    return true;
-  }
-
-  static int do_read(mock_lua_State *, int) {
-    return 42;
-  }
-};
-
-} // end namespace traits
-
-/***
  * Helper template which allows to shoe-horn various C++ functions into the required 
  * int (mock_lua_State *) signature so that they can be registered
  */
@@ -133,11 +101,7 @@ private:
   private:
     template <std::size_t index, typename T>
     static bool try_read_from_stack(mock_lua_State * L, T & t) {
-      if (traits::read<T>::check_read(L, index)) {
-        t = traits::read<T>::do_read(L, index);
-        return true;
-      }
-      return false;
+      return true;
     }
   };
 };
