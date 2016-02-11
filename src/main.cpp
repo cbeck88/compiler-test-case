@@ -1,4 +1,16 @@
-#include "mock_lua.hpp"
+struct mock_lua_State {
+  void * extraspace;
+};
+
+typedef int (*mock_lua_CFunction)(mock_lua_State *);
+
+/***
+ * Push c function
+ */
+
+inline void mock_lua_pushcfunction(mock_lua_State *, mock_lua_CFunction) {}
+
+// dispatch
 
 template <typename T, T t> struct dispatch_helper;
 
